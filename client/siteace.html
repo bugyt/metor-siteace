@@ -1,0 +1,223 @@
+<head>
+  <title>siteace</title>
+</head>
+
+<body>
+
+</body>
+
+<template name="ApplicationLayout">
+	{{> yield "navbar"}}
+	{{> yield "add_form"}}
+	<div class="container">
+		{{> yield "add_form"}}
+		{{> yield "main"}}
+	</div>
+	{{> yield "footer"}}
+</template>
+
+<template name="footer">
+<footer class="footer">
+      <div class="container">
+        <p class="text-muted">Thanks to Coursera.</p>
+      </div>
+</footer>
+</template>
+<template name="site">
+<div class="container" id="{{_id}}"> 
+	<div class="row">
+		<div class="col-xs-8">
+			<h2><a href="{{url}}" target="_blank">{{#if title}}{{title}}{{else}}{{url}}{{/if}}</a></h2>
+			<h4><span class="glyphicon glyphicon-link"></span><i>  {{url}}</i></h4>
+		</div>
+		<div class="col-xs-4 text-right" style="margin-top: 20px;">
+			<a href="{{url}}" class="btn btn-info">Visit site !  <span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+			
+			<a href="/" class="btn btn-default">Back <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">	
+			<div class="well"><label>Description : </label><p>{{description}}</p></div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			{{> vote }}
+		</div>
+	</div>
+	{{> postc}}
+   <div class="row">
+      <div class="col-sm-12">
+         <h3>Comments</h3>
+      </div>
+      <!-- /col-sm-12 -->
+   </div>
+        {{#each lcomments}}
+	{{> comments}}
+	{{/each}}
+</div>
+</template>
+
+
+<template name="navbar">
+        <!-- navbar  - you will be putting the login functions here -->
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Site Ace</a>
+                         {{> loginButtons }}
+                </div>
+		 <div class="col-sm-3 col-md-3 pull-right">
+        <form class="navbar-form" role="search">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+            <div class="input-group-btn">
+                <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
+        </form>
+        </div>
+        </div>
+        </div>
+</template>
+
+
+<template name="website_form">
+	{{#if currentUser}}
+	<a class="btn btn-default js-toggle-website-form" href="#">
+  		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</a>
+	
+	<!-- Modal -->
+<div id="myModalform" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add a website</h4>
+      </div>
+      <div class="modal-body">
+		<form class="js-save-website-form">
+		  <div class="form-group">
+		    <label for="url">Site address * </label><em class="text-success">  Click on green button to pull in information automatically</em>
+			<div class="input-group">
+				 <input type="url" class="form-control" id="url" placeholder="http://www.mysite.com">
+			   <span class="input-group-btn">
+				<a href="#" class="btn btn-success" id="httpInfo"><span class="glyphicon glyphicon-download-alt"></span></a>
+			   </span>
+			</div>
+			<span class="gurl glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+		  </div>
+		  <div class="form-group">
+		    <label for="title">Title</label>
+		    <input type="text" class="form-control" id="title" placeholder="Mysite">
+		    <span class="gtitle glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+		  </div>
+		    <div class="form-group">
+		    <label for="description">Description * </label>
+		    <input type="text" class="form-control" id="description" placeholder="I found this site really useful for ...">
+		    <span class="gtitle glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+		  </div>
+
+		  <button type="submit" class="btn btn-default">Submit</button><span id="result"></span>
+		</form>
+</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+	{{/if}}
+</template>
+
+<!-- template that displays several website items -->
+<template name="website_list">
+	<ol>
+	{{#each websites}}
+	{{>website_item}}
+	{{/each}}
+	</ol>
+</template>
+
+<!-- template that displays individual website entries -->
+<template name="website_item">
+<li  id="{{_id}}">
+	<h3><a href="/site/{{_id}}">{{#if title}}{{title}}{{else}}{{url}}{{/if}}</a>{{#if currentUser}} <span class="label label-success"></span>{{/if}}<a href="{{url}}" class="btn btn-info pull-right">Visit site !  <span class="glyphicon glyphicon-link" aria-hidden="true"></span></a></h3>
+	<div class="well" style="padding:5px;margin-bottom:0px"><label>Description : </label><p>{{description}}</p></div>
+	{{> vote }}
+</li>
+</template>
+
+<template name="vote">
+		<div class="alert alert-warning" style="padding: 5px;">
+	        {{#if currentUser}}
+	        <a href="#" class="btn btn-default js-upvote">
+	                <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+	        </a>
+	        <a href="#" class="btn btn-default js-downvote">
+	                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+	        </a>
+        	<!-- you will be putting your up and down vote buttons in here! -->
+        	{{/if}}
+		<span>{{#with vote}} Score : {{website_rating}} ( <strong class="text-success">{{website_up}}</strong> / <strong class="text-danger">{{website_down}}</strong> ) / {{else}} No score / {{/with}} Added : {{formatDate createdOn}} </span>
+		<span class="pull-right"><span class="glyphicon glyphicon-comment"></span>  Comment(s) : {{commentsNumber _id}}</span>
+	</div>
+</template>
+
+<template name="comments">
+   <div class="row">
+      <div class="col-sm-1">
+         <div class="thumbnail">
+            <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+         </div>
+         <!-- /thumbnail -->
+      </div>
+      <!-- /col-sm-1 -->
+      <div class="col-sm-11">
+         <div class="panel panel-default">
+            <div class="panel-heading">
+               <strong>{{username}}</strong> <span class="text-muted">commented {{formatDate createdOn}}</span>
+            </div>
+            <div class="panel-body">
+               {{comment}}
+            </div>
+            <!-- /panel-body -->
+         </div>
+         <!-- /panel panel-default -->
+      </div>
+      <!-- /col-sm-5 -->
+   </div>
+   <!-- /row -->
+</template>
+
+<template name="postc">
+		<form class="js-comment-form form" role="form">
+		{{#unless currentUser}}
+			<div class="form-group">
+				<label class="control-label" for="name">Name</label>
+				<input type="text" class="form-control" id="name" aria-describedby="nameStatus" placeholder="Your name">
+				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				<span id="nameStatus" class="sr-only">(error)</span>
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="email">Email</label>
+				<input type="email" class="form-control" id="email" aria-describedby="emailStatus" placeholder="Your email">
+				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				<span id="emailStatus" class="sr-only">(error)</span>
+			</div>
+		{{/unless}}
+		        <div class="form-group">
+                                <label class="control-label" for="txtcomment">Comment</label>
+                                <textarea  maxlength="500" row="3" class="form-control" id="txtcomment" aria-describedby="txtcommentStatus"  placeholder="Your comment"></textarea>
+                                <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <span id="txtcommentStatus" class="sr-only">(error)</span>
+                 	</div>
+			<button type="submit" class="btn btn-primary">Submit</button><span id="result"></span>
+		</form>
+</template>
